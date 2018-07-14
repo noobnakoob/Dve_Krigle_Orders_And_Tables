@@ -36,9 +36,6 @@ public class GUIManager : MonoBehaviour {
 
     public void UpdateTable(int tableID)
     {
-        if (!DataClass.current.tables_List.Exists(t => t.table_ID == tableID))
-            DataClass.current.tables_List.Add(new TableClass(tableID, TableType.Small));
-
         order_Field.text = "";
         DataClass.current.selected_Table = tableID;                
         UpdateTableOrders();

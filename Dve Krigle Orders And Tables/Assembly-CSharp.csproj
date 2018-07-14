@@ -53,7 +53,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\Managers\CheckAvailability.cs" />
+     <Compile Include="Assets\Scripts\Managers\CreateGrid.cs" />
+     <Compile Include="Assets\Scripts\Managers\DragAndDrop.cs" />
      <Compile Include="Assets\Scripts\Managers\GUIManager.cs" />
+     <Compile Include="Assets\Scripts\Managers\TableManager.cs" />
      <Compile Include="Assets\Scripts\Serialized\DataClass.cs" />
      <Compile Include="Assets\Scripts\Serialized\LoadData.cs" />
      <Compile Include="Assets\Scripts\Serialized\OrderClass.cs" />
