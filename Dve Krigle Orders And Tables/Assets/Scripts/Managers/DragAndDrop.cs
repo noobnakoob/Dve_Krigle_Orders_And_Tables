@@ -75,4 +75,6 @@ public class DragAndDrop : MonoBehaviour {
         rend.enabled = true;
         is_Drag = false;
     }
+
+
 }

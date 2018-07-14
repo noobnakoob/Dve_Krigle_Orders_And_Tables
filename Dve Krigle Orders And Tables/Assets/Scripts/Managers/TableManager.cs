@@ -46,7 +46,8 @@ public class TableManager : MonoBehaviour {
                     if (hit.collider.tag == "Cell")
                     {
                         newPos = new Vector3(hit.collider.transform.position.x, hit.collider.transform.position.y, 10);
-                        newPos = new Vector3(newPos.x - newPos.x % 0.08f + 0.04f, newPos.y - newPos.y % 0.08f + 0.04f, newPos.z);
+                        newPos = new Vector3(newPos.x-0.04f, newPos.y-0.04f, newPos.z);
+                        Debug.Log(""+newPos);
                         GameObject go = Instantiate(prefab, newPos, Quaternion.identity) as GameObject;
                         go.GetComponent<DragAndDrop>().table_ID = DataClass.current.table_ID;
                     }
