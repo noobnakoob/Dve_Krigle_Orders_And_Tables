@@ -1,11 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
 public class GUIManager : MonoBehaviour {
 
+    public static GUIManager instance;
     [Header("Table")]
     public InputField order_Field;
     public Transform order_Holder;
@@ -19,13 +18,21 @@ public class GUIManager : MonoBehaviour {
     public Button delete_Check;
     public GameObject check_Sum_Prefab;
 
+    public GameObject large_Table;
+    public GameObject medium_Table;
+    public GameObject small_Table;
+    public Transform table_Parent;
+
     TableClass current_Table;
+    GameObject table_Prefab;
 
     // Use this for initialization
     void Start() {
 
+        instance = this;
         LoadData.LoadFromFile();
         DataClass.current.selected_Table = 0;
+        GetTables();
         UpdateTableOrders();
     }
 
@@ -34,14 +41,14 @@ public class GUIManager : MonoBehaviour {
 
     }
 
-    public void UpdateTable(int tableID)
+    public void UpdateTable(long tableID)
     {
         order_Field.text = "";
         DataClass.current.selected_Table = tableID;                
         UpdateTableOrders();
     }
 
-    public void MakeNewOrder(int tableID)
+    public void MakeNewOrder()
     {
         int value = int.Parse(order_Field.text);
         order_Field.text = "";
@@ -70,7 +77,7 @@ public class GUIManager : MonoBehaviour {
             order_Field.onEndEdit.RemoveAllListeners();
             order_Field.onEndEdit.AddListener(delegate
             {
-                MakeNewOrder(DataClass.current.selected_Table);
+                MakeNewOrder();
             });
 
             table_Sum.text = current_Table.table_Sum.ToString();
@@ -142,5 +149,44 @@ public class GUIManager : MonoBehaviour {
     public void CloseCheckSumPanel()
     {
         check_Sum_Panel.SetActive(false);
+    }
+
+    public void GetTables()
+    {
+        if (DataClass.current.table_Positions.Count > 0)
+        {
+            for(int i = 0; i < DataClass.current.table_Positions.Count; i++)
+            {
+                if (DataClass.current.table_Positions[i].table_Type == TableType.Large)
+                    table_Prefab = large_Table;
+                else if (DataClass.current.table_Positions[i].table_Type == TableType.Medium)
+                    table_Prefab = medium_Table;
+                else if (DataClass.current.table_Positions[i].table_Type == TableType.Small)
+                    table_Prefab = small_Table;
+
+                GameObject go = Instantiate(table_Prefab, table_Parent, false) as GameObject;
+                Vector3 pos = new Vector3(
+                    DataClass.current.table_Positions[i].pos_x,
+                    DataClass.current.table_Positions[i].pos_y,
+                    DataClass.current.table_Positions[i].pos_z);
+
+                Quaternion rot = new Quaternion(
+                   DataClass.current.table_Positions[i].quat_x,
+                   DataClass.current.table_Positions[i].quat_y,
+                   DataClass.current.table_Positions[i].quat_z,
+                   DataClass.current.table_Positions[i].quat_w);
+
+                go.transform.localPosition = pos;
+                go.transform.rotation = rot;
+                go.name = "Table" + DataClass.current.table_Positions[i].table_ID.ToString();
+                go.GetComponent<DragAndDrop>().table_ID = DataClass.current.table_Positions[i].table_ID;
+            }
+        }
+    }
+
+    void OnApplicationFocus(bool focus)
+    {
+        if (!focus)
+            SaveData.SaveToFile();
     }
 }

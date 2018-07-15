@@ -53,8 +53,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\Managers\CheckAvailability.cs" />
-     <Compile Include="Assets\Scripts\Managers\CreateGrid.cs" />
      <Compile Include="Assets\Scripts\Managers\DragAndDrop.cs" />
      <Compile Include="Assets\Scripts\Managers\GUIManager.cs" />
      <Compile Include="Assets\Scripts\Managers\TableManager.cs" />
@@ -63,6 +61,7 @@
      <Compile Include="Assets\Scripts\Serialized\OrderClass.cs" />
      <Compile Include="Assets\Scripts\Serialized\SaveData.cs" />
      <Compile Include="Assets\Scripts\Serialized\TableClass.cs" />
+     <Compile Include="Assets\Scripts\Serialized\TablePositionClass.cs" />
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface-Mobile.shader" />
      <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro_Properties.cginc" />

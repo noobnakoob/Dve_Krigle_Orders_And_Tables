@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class TableManager : MonoBehaviour {
 
     public static TableManager instance;
+    public Transform table_Parent;
     public GameObject large_Prefab;
     public GameObject medium_Prefab;
     public GameObject small_Prefab;
@@ -19,12 +20,11 @@ public class TableManager : MonoBehaviour {
     bool is_Large;
     bool is_Medium;
     bool is_Small;
-    bool is_Edit;
+    public bool is_Edit;
     GameObject prefab;
 
     bool is_Instantiated;
     bool is_Available = true;
-    Vector3 newPos;
 
     // Use this for initialization
     void Start () {
@@ -35,33 +35,64 @@ public class TableManager : MonoBehaviour {
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (!is_Instantiated)
+        if (is_Edit)
         {
-            if (Input.GetMouseButtonDown(0))
+            if (!is_Instantiated)
+            {
+                if (Input.GetMouseButtonDown(0))
+                {
+                    Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                    RaycastHit2D hit = Physics2D.Raycast(pos, Vector3.back, 100);
+                    if (hit)
+                    {
+                        if (hit.collider.tag == "Grid")
+                        {
+                            GameObject go = Instantiate(prefab, new Vector3(pos.x, pos.y, 10), Quaternion.identity) as GameObject;
+                            go.transform.SetParent(table_Parent, true);
+                            go.name = "Table" + DataClass.current.table_ID.ToString();
+                            go.GetComponent<DragAndDrop>().table_ID = DataClass.current.table_ID;
+                            is_Instantiated = true;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                SetNewTable();
+            }
+        }
+        else
+        {
+            if (Input.GetMouseButtonUp(0))
             {
                 Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 RaycastHit2D hit = Physics2D.Raycast(pos, Vector3.back, 100);
                 if (hit)
                 {
-                    if (hit.collider.tag == "Cell")
+                    if (hit.collider.name.Contains("Table"))
                     {
-                        newPos = new Vector3(hit.collider.transform.position.x, hit.collider.transform.position.y, 10);
-                        newPos = new Vector3(newPos.x-0.04f, newPos.y-0.04f, newPos.z);
-                        Debug.Log(""+newPos);
-                        GameObject go = Instantiate(prefab, newPos, Quaternion.identity) as GameObject;
-                        go.GetComponent<DragAndDrop>().table_ID = DataClass.current.table_ID;
+                        GUIManager.instance.UpdateTable(hit.collider.GetComponent<DragAndDrop>().table_ID);
+
                     }
                 }
             }
         }
-        else
+    }    
+
+    void SetNewTable()
+    {
+        if (is_Instantiated)
         {
             is_Instantiated = false;
-            DataClass.current.tables_List.Add(new TableClass(DataClass.current.table_ID,
-                (is_Large) ? TableType.Large : ((is_Medium) ? TableType.Medium : TableType.Small), newPos));
+            DataClass.current.tables_List.Add(new TableClass(DataClass.current.table_ID));
+            GameObject temp = GameObject.Find("Table" + DataClass.current.table_ID.ToString());
+            DataClass.current.table_Positions.Add(new TablePositionClass(DataClass.current.table_ID, 
+                temp.transform.localPosition, 
+                temp.transform.rotation,
+                (is_Large) ? TableType.Large : ((is_Medium) ? TableType.Medium : TableType.Small)));
             DataClass.current.table_ID = (DataClass.current.table_ID + 1) % long.MaxValue;
         }
-    }    
+    }
 
     public void OnLargeTableClicked()
     {

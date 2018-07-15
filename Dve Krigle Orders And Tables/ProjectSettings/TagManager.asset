@@ -8,7 +8,7 @@ TagManager:
   - Medium
   - Small
   - Wall
-  - Cell
+  - Grid
   layers:
   - Default
   - TransparentFX
